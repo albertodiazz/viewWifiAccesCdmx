@@ -1,0 +1,3 @@
+server:
+  urlCDMX: "https://datos.cdmx.gob.mx/dataset/puntos-de-acceso-wifi-en-la-ciudad-de-mexico"
+  className: "a.btn.btn-sm.bg-blue-green-color-wheel.text-white.rounded"
