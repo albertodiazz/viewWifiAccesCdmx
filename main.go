@@ -1,7 +1,11 @@
+// Es un proyecto el cual pretende darte la ubicacion de los puntos de acceso
+// de wifi de la cdmx mas cercanos. Para ello se obtiene la geolocalizacion del usuario
+// y en base a los datos, decirle cual es sus opciones mas cercanas
 package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/albertodiazz/viewWifiAccesCdmx/models"
@@ -10,11 +14,10 @@ import (
 )
 
 // TODO
-// [] Consumir los datos de forma automatica y programada
-// [] Middleware para api
-// [] Api
-// [] Middleware para websocket
-// [] Preview cliente
+// [X] Consumir los datos de forma automatica y programada
+// [X] Levanta servidor para consumo de json en base al csv
+// 	- localhost:8080/data GET
+// [X] Setup con Redis
 
 func ConfigFile() models.ConfigFile {
 	f, err := os.Open("config.yml")
@@ -33,7 +36,12 @@ func ConfigFile() models.ConfigFile {
 }
 
 func main() {
-	dat := ConfigFile()
-	fromCsv.GetData(dat)
+	// dat := ConfigFile()
+
+	// fromCsv.GetData(dat)
+	// models.ConnectRedis(dat)
+
+	http.HandleFunc("/data", fromCsv.ReadCsvData)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }

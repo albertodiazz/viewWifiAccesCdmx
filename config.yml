@@ -1,3 +1,8 @@
 server:
   urlCDMX: "https://datos.cdmx.gob.mx/dataset/puntos-de-acceso-wifi-en-la-ciudad-de-mexico"
   className: "a.btn.btn-sm.bg-blue-green-color-wheel.text-white.rounded"
+
+database:
+  ip: "redis://10.90.125.31:"
+  port: "6379"
+  db: "/0"

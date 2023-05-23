@@ -1,6 +1,8 @@
 package fromCsv
 
 import (
+	"encoding/csv"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
@@ -10,7 +12,7 @@ import (
 	"github.com/albertodiazz/viewWifiAccesCdmx/models"
 )
 
-func DownloadToCSV(url string) {
+func downloadToCSV(url string) {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalf("Error al realizar la solicitud GET: %s\n", err)
@@ -57,5 +59,38 @@ func GetData(data models.ConfigFile) {
 	/////////////////////
 	// Aqui descargamos el CSV
 	/////////////////////
-	DownloadToCSV(href)
+	downloadToCSV(href)
+}
+
+func ReadCsvData(w http.ResponseWriter, r *http.Request) {
+	// func ReadCsvData() {
+	file, err := os.Open("./data/wifiCdmx.csv")
+	if err != nil {
+		log.Fatalf("No se logro abrir el documento csv: %s", err)
+	}
+	defer file.Close()
+
+	// Leer el archivo CSV utilizando el paquete encoding/csv
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Fatalf("No se logro leer el documento csv: %s", err)
+	}
+
+	var dw models.DatosWifi
+	var data []models.DatosWifi
+
+	for _, each := range records[1:] {
+		dw.Id = each[0]
+		dw.Latitud = each[3]
+		dw.Longitud = each[4]
+		dw.Colonia = each[5]
+		dw.Alcaldia = each[6]
+		data = append(data, dw)
+	}
+
+	// // Codificar los datos como JSON y enviar la respuesta al cliente
+	// w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }
